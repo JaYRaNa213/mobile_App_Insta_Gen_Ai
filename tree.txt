@@ -36,15 +36,21 @@ instaGen
 │   │   │   └── media.ts
 │   │   ├── store
 │   │   │   └── index.ts
+│   │   ├── types
+│   │   │   └── navigation.ts
 │   │   └── utils
+│   │       └── mime.ts
 │   ├── .env
 │   ├── .gitignore
-│   ├── App.js
 │   ├── app.json
+│   ├── App.tsx
 │   ├── index.js
 │   ├── package-lock.json
 │   ├── package.json
-│   └── pnpm-lock.yaml
+│   ├── pnpm-lock.yaml
+│   └── tsconfig.json
+├── mobile~01fe2c2f903e4209c6d424402f9d37b00ae6a97f
 ├── n8n-workflows
 ├── README.md
-└── tree.js
+├── tree.js
+└── tree.txt
