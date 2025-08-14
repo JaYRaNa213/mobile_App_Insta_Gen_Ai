@@ -33,8 +33,6 @@ instaGen/
 │ │ └── types/ # TypeScript types
 │── backend/ # (to be implemented) Node.js/Express backend
 
-yaml
-Copy code
 
 ---
 
@@ -97,12 +95,3 @@ yaml
 Copy code
 
 ---
-
-If you want, I can also **add backend setup instructions** so when you implement it later, you won’t need to update much. That way your README is future-proof.
-
-
-
-
-
-
-Ask ChatGPT
