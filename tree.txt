@@ -1,0 +1,50 @@
+instaGen
+├── backend
+│   ├── Dockerfile
+│   ├── src
+│   │   ├── controllers
+│   │   ├── models
+│   │   ├── routes
+│   │   │   └── upload.ts
+│   │   ├── services
+│   │   │   ├── ai
+│   │   │   └── media
+│   │   ├── workers
+│   │   │   └── analyze.ts
+│   │   └── index.ts
+│   ├── .env
+│   ├── .gitignore
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── pnpm-lock.yaml
+│   └── tsconfig.json
+├── infrastructure
+├── mobile
+│   ├── assets
+│   │   ├── adaptive-icon.png
+│   │   ├── favicon.png
+│   │   ├── icon.png
+│   │   └── splash-icon.png
+│   ├── src
+│   │   ├── components
+│   │   ├── screens
+│   │   │   ├── CameraScreen.tsx
+│   │   │   ├── Home.tsx
+│   │   │   └── PreviewScreen.tsx
+│   │   ├── services
+│   │   │   ├── api.ts
+│   │   │   └── media.ts
+│   │   ├── store
+│   │   │   └── index.ts
+│   │   └── utils
+│   ├── .env
+│   ├── .gitignore
+│   ├── App.js
+│   ├── app.json
+│   ├── index.js
+│   ├── package-lock.json
+│   ├── package.json
+│   └── pnpm-lock.yaml
+├── n8n-workflows
+├── README.md
+└── tree.js
