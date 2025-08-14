@@ -2,7 +2,7 @@
 import express from 'express';
 import AWS from 'aws-sdk';
 const router = express.Router();
-const s3 = new AWS.S3({ region: process.env.AWS_REGION });
+const s3 = new AWS.S3({ import.meta.process.env.AWS_REGION });
 
 router.post('/presign', async (req, res) => {
   const { filename, contentType } = req.body;
