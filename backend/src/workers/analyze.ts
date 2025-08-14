@@ -1,20 +1,66 @@
-// src/workers/analyze.ts (simplified)
-import { Queue, Worker } from 'bullmq';
-import axios from 'axios';
-const analyzeQueue = new Queue('analyze', { connection: { host: 'redis' } });
+import 'dotenv/config';
+import mongoose from 'mongoose';
+import { Worker } from 'bullmq';
+import IORedis from 'ioredis';
 
-new Worker('analyze', async job => {
-  const { s3Key, mediaType, mediaUrl, mediaId } = job.data;
-  // 1) Call OpenAI Vision or Google Vision
-  const visionResp = await callOpenAIVision(mediaUrl);
-  // 2) call face/emotion API if needed
-  const faceResp = await callFaceApi(mediaUrl);
-  // 3) call music-reco API with detected mood
-  const music = await recommendMusic({ mood: visionResp.mood });
+import { analyzeQueueName } from '../services/queue.js';
+import { Media } from '../models/Media.js';
+import { analyzeMedia } from '../services/ai/analyze.js';
 
-  // Save results to DB
-  await Media.updateOne({ _id: mediaId }, { $set: {
-    status: 'done',
-    meta: { vision: visionResp, faces: faceResp, musicRecommendation: music }
-  }});
+async function bootstrap() {
+  // DB
+  if (!process.env.MONGODB_URI) {
+    console.error('[Worker] MONGODB_URI missing.');
+    process.exit(1);
+  }
+  await mongoose.connect(process.env.MONGODB_URI);
+  console.log('[Worker] DB connected');
+
+  // Redis
+  const redis = new IORedis({
+    host: process.env.REDIS_HOST || 'localhost',
+    port: Number(process.env.REDIS_PORT || 6379)
+  });
+
+  // Worker
+  const worker = new Worker(
+    analyzeQueueName,
+    async job => {
+      const { mediaId } = job.data as { mediaId: string };
+      const media = await Media.findById(mediaId);
+      if (!media) {
+        console.warn('[Worker] Media not found:', mediaId);
+        return;
+      }
+
+      try {
+        media.status = 'analyzing';
+        await media.save();
+
+        const result = await analyzeMedia(media.key, media.type); // <-- replace with real AI calls when ready
+
+        media.meta = result;
+        media.status = 'done';
+        await media.save();
+
+        console.log(`[Worker] Analysis complete for media ${media._id}`);
+      } catch (err) {
+        console.error('[Worker] Analysis error:', err);
+        media.status = 'failed';
+        await media.save();
+      }
+    },
+    { connection: redis }
+  );
+
+  worker.on('failed', (job, err) => {
+    console.error(`[Worker] Job ${job?.id} failed:`, err);
+  });
+
+  console.log(`[Worker] Listening on queue "${analyzeQueueName}"`);
+}
+
+bootstrap().catch(err => {
+  console.error('[Worker] Bootstrap error:', err);
+  process.exit(1);
 });
