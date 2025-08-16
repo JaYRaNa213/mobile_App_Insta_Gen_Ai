@@ -1,6 +1,6 @@
 import express from 'express';
 import { z } from 'zod';
-import { getPresignedPutUrl } from '../services/media/s3.js';
+import { getPresignedPutUrl } from '../services/media/s3';
 
 const router = express.Router();
 

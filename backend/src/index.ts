@@ -4,9 +4,8 @@ import cors from 'cors';
 import morgan from 'morgan';
 import createError from 'http-errors';
 import mongoose from 'mongoose';
-
-import uploadRouter from './routes/upload.js';
-import mediaRouter from './routes/media.js';
+import uploadRouter from './routes/upload';
+import mediaRouter from './routes/media';
 
 const app = express();
 

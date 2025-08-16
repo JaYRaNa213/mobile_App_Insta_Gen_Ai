@@ -1,11 +1,12 @@
+// src/workers/analyze.ts
 import 'dotenv/config';
 import mongoose from 'mongoose';
 import { Worker } from 'bullmq';
 import IORedis from 'ioredis';
 
-import { analyzeQueueName } from '../services/queue.js';
-import { Media } from '../models/Media.js';
-import { analyzeMedia } from '../services/ai/analyze.js';
+import { analyzeQueueName } from '../services/queue';
+import { Media } from '../models/Media';
+import { analyzeMedia } from '../services/ai/analyze';
 
 async function bootstrap() {
   // DB
@@ -16,16 +17,20 @@ async function bootstrap() {
   await mongoose.connect(process.env.MONGODB_URI);
   console.log('[Worker] DB connected');
 
-  // Redis
-  const redis = new IORedis({
-    host: process.env.REDIS_HOST || 'localhost',
-    port: Number(process.env.REDIS_PORT || 6379)
+  // Redis (Cloud or local via REDIS_URL)
+  if (!process.env.REDIS_URL) {
+    console.error('[Worker] REDIS_URL missing.');
+    process.exit(1);
+  }
+  // Required for BullMQ v5 when using remote hosts
+  const redis = new IORedis(process.env.REDIS_URL, {
+    maxRetriesPerRequest: null
   });
 
   // Worker
   const worker = new Worker(
     analyzeQueueName,
-    async job => {
+    async (job) => {
       const { mediaId } = job.data as { mediaId: string };
       const media = await Media.findById(mediaId);
       if (!media) {
@@ -37,7 +42,7 @@ async function bootstrap() {
         media.status = 'analyzing';
         await media.save();
 
-        const result = await analyzeMedia(media.key, media.type); // <-- replace with real AI calls when ready
+        const result = await analyzeMedia(media.key, media.type);
 
         media.meta = result;
         media.status = 'done';
@@ -60,7 +65,7 @@ async function bootstrap() {
   console.log(`[Worker] Listening on queue "${analyzeQueueName}"`);
 }
 
-bootstrap().catch(err => {
+bootstrap().catch((err) => {
   console.error('[Worker] Bootstrap error:', err);
   process.exit(1);
 });

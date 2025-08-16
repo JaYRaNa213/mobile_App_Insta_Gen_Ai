@@ -1,7 +1,7 @@
 import express from 'express';
 import { z } from 'zod';
-import { Media } from '../models/Media.js';
-import { analyzeQueue } from '../services/queue.js';
+import { Media } from '../models/Media';
+import { analyzeQueue } from '../services/queue';
 
 const router = express.Router();
 
