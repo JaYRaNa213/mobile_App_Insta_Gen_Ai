@@ -11,7 +11,7 @@ RUN npm ci
 # -------------------------------------
 FROM node:20-alpine AS build
 WORKDIR /app
-COPY package*.json ./             # <-- you missed this, now added ✅
+COPY package*.json ./             
 COPY tsconfig.json ./
 COPY src ./src
 COPY --from=deps /app/node_modules ./node_modules
