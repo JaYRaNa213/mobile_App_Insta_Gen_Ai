@@ -1,19 +1,24 @@
 instaGen
 ├── backend
-│   ├── Dockerfile
 │   ├── src
 │   │   ├── controllers
 │   │   ├── models
+│   │   │   └── Media.ts
 │   │   ├── routes
+│   │   │   ├── media.ts
 │   │   │   └── upload.ts
 │   │   ├── services
 │   │   │   ├── ai
-│   │   │   └── media
+│   │   │   │   └── analyze.ts
+│   │   │   ├── media
+│   │   │   │   └── s3.ts
+│   │   │   └── queue.ts
 │   │   ├── workers
 │   │   │   └── analyze.ts
 │   │   └── index.ts
 │   ├── .env
 │   ├── .gitignore
+│   ├── Dockerfile
 │   ├── package-lock.json
 │   ├── package.json
 │   ├── pnpm-lock.yaml
@@ -44,7 +49,7 @@ instaGen
 │   ├── .gitignore
 │   ├── app.json
 │   ├── App.tsx
-│   ├── index.js
+│   ├── index.ts
 │   ├── package-lock.json
 │   ├── package.json
 │   ├── pnpm-lock.yaml
